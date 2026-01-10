@@ -46,6 +46,13 @@
 "description": "Action-packed Minecraft coloring page featuring a Creeper and TNT blocks. Perfect for gamers and fans!",
 "category": "minecraft",
 "image": "minecraft/minecraft-creeper-and-tnt-coloring-sheet.png"
+},
+{
+"id": "minecraft-creeper-coloring-page",
+"title": "Minecraft Creeper Coloring Page",
+"description": "Fun Plush Adventure coloring sheet for Minecraft fans. Print and color!",
+"category": "minecraft",
+"image": "minecraft/minecraft-creeper-coloring-page.png"
 }
 ]
 }
