@@ -1,17 +1,8 @@
-# generate_sitemap.py
-# Reads:
-# - pages.json (root) for site.baseUrl and categories
-# - categories/<category_id>.json for pages in each category
-# Writes:
-# - sitemap.xml (root)
-#
-# Run on Windows:
-# py generate_sitemap.py
-
 import json
 import datetime
 from pathlib import Path
 from urllib.parse import quote
+import html
 
 ROOT = Path(__file__).resolve().parent
 
@@ -28,18 +19,14 @@ def read_json(path: Path):
 def q(value: str) -> str:
   return quote(str(value), safe="")
 
-def main():
-  pages_index_path = ROOT / "pages.json"
-  if not pages_index_path.exists():
-    raise FileNotFoundError("pages.json not found in root")
+def xml_escape(s: str) -> str:
+  # converts & to &amp; etc
+  return html.escape(s, quote=True)
 
-  index = read_json(pages_index_path)
+def main():
+  index = read_json(ROOT / "pages.json")
   base = norm_base(index.get("site", {}).get("baseUrl", ""))
   today = datetime.date.today().isoformat()
-
-  categories = index.get("categories", [])
-  if not isinstance(categories, list):
-    categories = []
 
   urls = []
   seen = set()
@@ -48,24 +35,19 @@ def main():
     if loc in seen:
       return
     seen.add(loc)
-    urls.append((loc, today))
+    urls.append(loc)
 
-  # Home
   add_url(f"{base}/")
 
-  # Categories and pages inside each category file
-  for c in categories:
+  for c in index.get("categories", []):
     cid = c.get("id")
     if not cid:
       continue
 
-    # Category URL
     add_url(f"{base}/?c={q(cid)}")
 
-    # Category pages file
     cat_path = ROOT / "categories" / f"{cid}.json"
     if not cat_path.exists():
-      # If a category file is missing, skip it (still keep the category URL)
       continue
 
     cat_data = read_json(cat_path)
@@ -73,29 +55,26 @@ def main():
     if not isinstance(pages, list):
       continue
 
-    # Page URLs include both id and c (matches your links and canonical)
     for p in pages:
       pid = p.get("id")
       if not pid:
         continue
       add_url(f"{base}/page.html?id={q(pid)}&c={q(cid)}")
 
-  xml_lines = []
-  xml_lines.append('<?xml version="1.0" encoding="UTF-8"?>')
-  xml_lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+  lines = []
+  lines.append('<?xml version="1.0" encoding="UTF-8"?>')
+  lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
 
-  for loc, lastmod in urls:
-    xml_lines.append("  <url>")
-    xml_lines.append(f"    <loc>{loc}</loc>")
-    xml_lines.append(f"    <lastmod>{lastmod}</lastmod>")
-    xml_lines.append("  </url>")
+  for loc in urls:
+    lines.append("  <url>")
+    lines.append(f"    <loc>{xml_escape(loc)}</loc>")
+    lines.append(f"    <lastmod>{today}</lastmod>")
+    lines.append("  </url>")
 
-  xml_lines.append("</urlset>")
-  xml = "\n".join(xml_lines) + "\n"
+  lines.append("</urlset>")
+  xml = "\n".join(lines) + "\n"
 
-  out_path = ROOT / "sitemap.xml"
-  out_path.write_text(xml, encoding="utf-8")
-
+  (ROOT / "sitemap.xml").write_text(xml, encoding="utf-8")
   print(f"Generated sitemap.xml with {len(urls)} URLs")
 
 if __name__ == "__main__":
