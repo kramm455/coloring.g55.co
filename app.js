@@ -35,7 +35,12 @@ function renderMenu(data) {
   if (!menu) return;
 
   menu.innerHTML = "";
-  data.categories.forEach(c => {
+
+  const sortedCategories = [...data.categories].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
+  sortedCategories.forEach(c => {
     menu.appendChild(el(`
       <li>
         <a class="tag"
