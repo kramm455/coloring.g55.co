@@ -121,7 +121,11 @@ async function initRoot() {
   setMetaDescription(catDesc);
   setLink("canonical", "/?c=" + encodeURIComponent(cid));
 
-  const list = data.pages.filter(p => p.category === cid);
+  const list = data.pages
+    .filter(p => p.category === cid)
+    .slice()
+    .reverse();
+
   renderGrid(list);
 }
 
@@ -176,6 +180,8 @@ async function initPage() {
 
   const similar = data.pages
     .filter(p => p.category === page.category && p.id !== page.id)
+    .slice()
+    .reverse()
     .slice(0, 8);
 
   const list = document.getElementById("more-pages-list");
