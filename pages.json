@@ -15,6 +15,11 @@
 "id": "zootopia",
 "name": "Zootopia Coloring Pages",
 "description": "Free printable Zootopia coloring pages to download and print. Color Judy Hopps, Nick Wilde, and other Zootopia characters."
+},
+{
+"id": "fnaf",
+"name": "FNAF Coloring Pages",
+"description": "Free printable FNAF coloring pages featuring Freddy Fazbear and other Five Nights at Freddy’s characters Perfect for kids and fans to download print and color at home or school."
 }
 ],
 
@@ -249,6 +254,13 @@
 "description": "Download this adorable Baby Enderman’s Night Out coloring page! This high-quality printable features a fluffy, big-eyed baby Enderman holding a grass block, surrounded by sweet sheep and a little chicken in a peaceful moonlit village. It is a perfect, stress-free creative activity for young children and fans of kawaii Minecraft art. Click to download and print for free!",
 "category": "minecraft",
 "image": "minecraft/free-baby-enderman-sheep-coloring-sheet.png"
+},
+{
+"id": "freddy-fazbear-fnaf-coloring-page-free-printable",
+"title": "Freddy Fazbear FNAF Coloring Page Free Printable",
+"description": "Freddy Fazbear Five Nights at Freddy’s coloring page with microphone balloons stars moon and spooky party decorations free printable FNAF coloring sheet.",
+"category": "minecraft",
+"image": "fnaf/freddy-fazbear-fnaf-coloring-page-free-printable.png"
 }
 ]
 }
