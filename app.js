@@ -96,14 +96,23 @@ async function initRoot() {
   const descEl = document.getElementById("desc");
 
   if (!isCategory) {
-    // load pages from all categories (for latest 24)
-    let allPages = [];
-    for (const c of (data.categories || [])) {
-      const pages = await loadCategoryPages(c.id);
-      pages.forEach(p => allPages.push({ ...p, category: c.id }));
-    }
+    // homepage: 1 newest image per category, categories sorted alphabetically
+    let homepagePages = [];
+    let totalCount = 0;
 
-    const totalCount = allPages.length;
+    const sortedCategories = [...(data.categories || [])].sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "")
+    );
+
+    for (const c of sortedCategories) {
+      const pages = await loadCategoryPages(c.id);
+      totalCount += pages.length;
+
+      if (pages.length > 0) {
+        const newest = pages[pages.length - 1];
+        homepagePages.push({ ...newest, category: c.id });
+      }
+    }
 
     document.title = data.site?.title || "";
     if (h1El) h1El.textContent = withCountPrefix(totalCount, data.site?.h1 || "");
@@ -112,8 +121,7 @@ async function initRoot() {
     setMetaDescription(data.site?.description || "");
     setLink("canonical", "/");
 
-    const latest = allPages.slice(-24).reverse();
-    renderGrid(latest);
+    renderGrid(homepagePages);
     return;
   }
 
@@ -140,7 +148,7 @@ async function initPage() {
   const data = await loadData();
 
   const id = qs("id");
-  let cid = qs("c"); // optional but helps performance
+  let cid = qs("c");
 
   // If category not provided, find it by scanning categories
   if (!cid) {
