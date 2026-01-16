@@ -48,7 +48,7 @@ $isCategory = ($cid !== '');
 
 $title = '';
 $metaDesc = $site['description'] ?? '';
-$canonical = 'index.php';
+$canonical = '/';
 
 $h1 = '';
 $desc = '';
@@ -82,7 +82,7 @@ if (!$isCategory) {
 
   $title = $h1;
   $metaDesc = $site['description'] ?? '';
-  $canonical = 'index.php';
+  $canonical = '/';
 } else {
   $cat = null;
   foreach ($categories as $c) {
@@ -113,7 +113,7 @@ if (!$isCategory) {
   $title = $h1 . ($siteTitle ? ' | ' . $siteTitle : '');
 
   $metaDesc = $catDesc;
-  $canonical = 'index.php?c=' . rawurlencode($cid);
+  $canonical = '?c=' . rawurlencode($cid);
 }
 ?>
 <!DOCTYPE html>
@@ -151,7 +151,7 @@ gtag('config', 'G-6SLYYXXV9H');
 <body>
 <table id="header">
 <tr>
-<td id="header-left"><a id="logo" href="index.php" title="" target="_top"></a></td>
+<td id="header-left"><a id="logo" href="/" title="" target="_top"></a></td>
 <td id="header-right"><div class="gcse-searchbox-only"></div></td>
 </tr>
 </table>
@@ -180,7 +180,7 @@ gtag('config', 'G-6SLYYXXV9H');
 <h3>Discover More Free Printable Coloring Pages</h3>
 <ul class="menu" id="category-menu">
 <?php foreach ($categories as $c): ?>
-<li><a class="tag" href="index.php?c=<?php echo rawurlencode($c['id'] ?? ''); ?>" title="<?php echo h($c['name'] ?? ''); ?>" target="_top"><?php echo h($c['name'] ?? ''); ?></a></li>
+<li><a class="tag" href="?c=<?php echo rawurlencode($c['id'] ?? ''); ?>" title="<?php echo h($c['name'] ?? ''); ?>" target="_top"><?php echo h($c['name'] ?? ''); ?></a></li>
 <?php endforeach; ?>
 </ul>
 </td>
