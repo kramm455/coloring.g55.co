@@ -110,7 +110,7 @@ if (!$isCategory) {
   $desc = $catDesc;
 
   $siteTitle = $site['title'] ?? '';
-  $title = $h1 . ($siteTitle ? ' | ' . $siteTitle : '');
+  $title = $h1;
 
   $metaDesc = $catDesc;
   $canonical = '/?c=' . rawurlencode($cid);

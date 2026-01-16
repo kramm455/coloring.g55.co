@@ -77,7 +77,7 @@ if (!$page) {
 
 $pageTitle = $page['title'] ?? '';
 $siteTitle = $site['title'] ?? '';
-$title = $pageTitle . ($siteTitle ? ' | ' . $siteTitle : '');
+$title = $pageTitle;
 
 $metaDesc = $page['description'] ?? $pageTitle;
 $canonical = 'page.php?id=' . rawurlencode($id) . '&c=' . rawurlencode($cid);
