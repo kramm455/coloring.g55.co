@@ -1,4 +1,121 @@
-<?php require 'app.php'; ?>
+<?php
+// index.php
+header('Content-Type: text/html; charset=utf-8');
+
+function h($s) { return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8'); }
+
+function read_json($path) {
+  if (!file_exists($path)) return null;
+  $raw = file_get_contents($path);
+  if ($raw === false) return null;
+  $data = json_decode($raw, true);
+  return is_array($data) ? $data : null;
+}
+
+function load_site_index() {
+  return read_json(__DIR__ . DIRECTORY_SEPARATOR . 'pages.json');
+}
+
+function load_category_pages($cid) {
+  $cid = preg_replace('/[^a-z0-9_-]/i', '', (string)$cid);
+  $path = __DIR__ . DIRECTORY_SEPARATOR . 'categories' . DIRECTORY_SEPARATOR . $cid . '.json';
+  $data = read_json($path);
+  $pages = ($data && isset($data['pages']) && is_array($data['pages'])) ? $data['pages'] : [];
+  return [$cid, $pages];
+}
+
+function sort_categories_alpha($cats) {
+  usort($cats, function($a, $b) {
+    return strcasecmp($a['name'] ?? '', $b['name'] ?? '');
+  });
+  return $cats;
+}
+
+function newest_page($pages) {
+  $n = count($pages);
+  return $n ? $pages[$n - 1] : null;
+}
+
+$index = load_site_index();
+$site = $index['site'] ?? [];
+$categories = $index['categories'] ?? [];
+if (!is_array($categories)) $categories = [];
+$categories = sort_categories_alpha($categories);
+
+$cid = isset($_GET['c']) ? $_GET['c'] : '';
+$cid = preg_replace('/[^a-z0-9_-]/i', '', (string)$cid);
+$isCategory = ($cid !== '');
+
+$title = '';
+$metaDesc = $site['description'] ?? '';
+$canonical = '/';
+
+$h1 = '';
+$desc = '';
+$gridItems = []; // each: id,title,image,category
+
+if (!$isCategory) {
+  // homepage: 1 newest image per category, categories already sorted alphabetically
+  $totalCount = 0;
+
+  foreach ($categories as $c) {
+    $catId = $c['id'] ?? '';
+    if (!$catId) continue;
+
+    list($_, $pages) = load_category_pages($catId);
+    $totalCount += count($pages);
+
+    $newest = newest_page($pages);
+    if ($newest && isset($newest['id'], $newest['title'], $newest['image'])) {
+      $gridItems[] = [
+        'id' => $newest['id'],
+        'title' => $newest['title'],
+        'image' => $newest['image'],
+        'category' => $catId
+      ];
+    }
+  }
+
+  $h1Base = $site['h1'] ?? '';
+  $h1 = ($totalCount > 0 ? $totalCount . ' ' : '') . $h1Base;
+  $desc = $site['description'] ?? '';
+
+  $title = $h1;
+  $metaDesc = $site['description'] ?? '';
+  $canonical = '/';
+} else {
+  $cat = null;
+  foreach ($categories as $c) {
+    if (($c['id'] ?? '') === $cid) { $cat = $c; break; }
+  }
+
+  list($_, $pages) = load_category_pages($cid);
+  $pages = array_reverse($pages); // newest to oldest
+
+  foreach ($pages as $p) {
+    if (!isset($p['id'], $p['title'], $p['image'])) continue;
+    $gridItems[] = [
+      'id' => $p['id'],
+      'title' => $p['title'],
+      'image' => $p['image'],
+      'category' => $cid
+    ];
+  }
+
+  $catName = $cat['name'] ?? 'Category';
+  $catDesc = $cat['description'] ?? ($site['description'] ?? '');
+
+  $count = count($gridItems);
+  $h1 = ($count > 0 ? $count . ' ' : '') . $catName;
+  $desc = $catDesc;
+
+  $siteTitle = $site['title'] ?? '';
+  $title = $h1 . ($siteTitle ? ' | ' . $siteTitle : '');
+
+  $metaDesc = $catDesc;
+  $canonical = '/?c=' . rawurlencode($cid);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
