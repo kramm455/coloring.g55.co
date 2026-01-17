@@ -21,7 +21,7 @@ foreach ($categories as $c) {
   $allPageCount += count($pages);
 }
 
-$perSitemap = 40000;
+$perSitemap = 10000;
 $pageSitemaps = (int)ceil($allPageCount / $perSitemap);
 if ($pageSitemaps < 1) $pageSitemaps = 1;
 
