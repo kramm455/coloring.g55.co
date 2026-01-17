@@ -63,7 +63,7 @@ gtag('config', 'G-6SLYYXXV9H');
 <h2>Discover More Free Printable Coloring Pages</h2>
 <ul class="menu">
 <?php foreach ($categories as $c): ?>
-<li><a class="tag" href="/?c=<?php echo rawurlencode($c['id'] ?? ''); ?>" title="<?php echo h($c['name'] ?? ''); ?>" target="_top"><?php echo h($c['name'] ?? ''); ?></a></li>
+<li><a class="tag" href="/?c=<?php echo rawurlencode($c['id']); ?>" title="<?php echo h($c['name']); ?>" target="_top"><?php echo h($c['name']); ?></a></li>
 <?php endforeach; ?>
 </ul>
 </td>

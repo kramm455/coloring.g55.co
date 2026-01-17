@@ -50,9 +50,7 @@ gtag('config', 'G-6SLYYXXV9H');
 <p><?php echo h($desc); ?></p>
 <a class="tag" id="print" href="#printable" onclick="window.print();">Print</a>
 <a class="tag" id="download" href="<?php echo h($imageSrc); ?>" download>Download</a>
-<?php if ($cat): ?>
 <a class="tag" id="more" href="<?php echo h($moreHref); ?>"><?php echo h($moreText); ?></a>
-<?php endif; ?>
 </div>
 </div>
 </td>
@@ -76,7 +74,7 @@ gtag('config', 'G-6SLYYXXV9H');
 <h3>Discover More Free Printable Coloring Pages</h3>
 <ul class="menu">
 <?php foreach ($categories as $c): ?>
-<li><a class="tag" href="/?c=<?php echo rawurlencode($c['id'] ?? ''); ?>" title="<?php echo h($c['name'] ?? ''); ?>" target="_top"><?php echo h($c['name'] ?? ''); ?></a></li>
+<li><a class="tag" href="/?c=<?php echo rawurlencode($c['id']); ?>" title="<?php echo h($c['name']); ?>" target="_top"><?php echo h($c['name']); ?></a></li>
 <?php endforeach; ?>
 </ul>
 </td>
