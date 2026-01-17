@@ -44,7 +44,7 @@ gtag('config', 'G-6SLYYXXV9H');
 <tr>
 <td>
 <div id="container">
-<img class="page" id="printable" onclick="document.querySelector('#printable') && document.querySelector('#printable').requestFullscreen && document.querySelector('#printable').requestFullscreen();" src="<?php echo h($imageSrc); ?>" alt="<?php echo h($desc); ?>">
+<img class="page" id="printable" onclick="this.requestFullscreen();" src="<?php echo h($imageSrc); ?>" alt="<?php echo h($desc); ?>">
 <div class="tower_r">
 <h1><?php echo h($h1); ?></h1>
 <p><?php echo h($desc); ?></p>
@@ -62,11 +62,11 @@ gtag('config', 'G-6SLYYXXV9H');
 <tr>
 <td>
 <h2><?php echo h($moreTitle); ?></h2>
-<ul class="more-pages" id="more-pages-list">
+<ul class="more-pages">
 <?php foreach ($similar as $p): ?>
-<a class="thumbnail" href="/page.php?id=<?php echo rawurlencode($p['id']); ?>&c=<?php echo rawurlencode($cid); ?>" title="<?php echo h($p['title']); ?>" target="_top">
+<li><a class="thumbnail" href="/page.php?id=<?php echo rawurlencode($p['id']); ?>&c=<?php echo rawurlencode($cid); ?>" title="<?php echo h($p['title']); ?>" target="_top">
 <img loading="lazy" src="<?php echo h($p['image']); ?>" alt="<?php echo h($p['title']); ?>" width="170" height="128">
-</a>
+</a></li>
 <?php endforeach; ?>
 </ul>
 </td>
@@ -76,7 +76,7 @@ gtag('config', 'G-6SLYYXXV9H');
 <tr>
 <td>
 <h3>Discover More Free Printable Coloring Pages</h3>
-<ul class="menu" id="category-menu">
+<ul class="menu">
 <?php foreach ($categories as $c): ?>
 <li><a class="tag" href="/?c=<?php echo rawurlencode($c['id'] ?? ''); ?>" title="<?php echo h($c['name'] ?? ''); ?>" target="_top"><?php echo h($c['name'] ?? ''); ?></a></li>
 <?php endforeach; ?>
