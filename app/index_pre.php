@@ -3,60 +3,30 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'common.php';
 
 $index = load_site_index();
-$site = $index['site'] ?? [];
+$site = $index['site'];
 $categories = get_categories_sorted($index);
 
-$cid = isset($_GET['c']) ? $_GET['c'] : '';
-$cid = clean_slug($cid);
-$isCategory = ($cid !== '');
+$catMap = [];
+foreach ($categories as $c) {
+  $catMap[$c['id']] = $c;
+}
 
-$title = '';
-$metaDesc = $site['description'] ?? '';
-$canonical = 'https://coloring.g55.co/';
+$hasC = isset($_GET['c']);
 
-$h1 = '';
-$desc = '';
-$gridItems = []; // each: id,title,image,category
-
-if (!$isCategory) {
-  $totalCount = 0;
-
-  foreach ($categories as $c) {
-    $catId = $c['id'] ?? '';
-    if (!$catId) continue;
-
-    list($_, $pages) = load_category_pages($catId);
-    $totalCount += count($pages);
-
-    $newest = newest_page($pages);
-    if ($newest && isset($newest['id'], $newest['title'], $newest['image'])) {
-      $gridItems[] = [
-        'id' => $newest['id'],
-        'title' => $newest['title'],
-        'image' => $newest['image'],
-        'category' => $catId
-      ];
-    }
+if ($hasC) {
+  $cid = clean_slug($_GET['c']);
+  if ($cid === '' || !isset($catMap[$cid])) {
+    header('Location: /', true, 302);
+    exit;
   }
 
-  $h1Base = $site['h1'] ?? '';
-  $h1 = ($totalCount > 0 ? $totalCount . ' ' : '') . $h1Base;
-  $desc = $site['description'] ?? '';
-
-  $title = $h1;
-  $metaDesc = $site['description'] ?? '';
-  $canonical = 'https://coloring.g55.co/';
-} else {
-  $cat = null;
-  foreach ($categories as $c) {
-    if (($c['id'] ?? '') === $cid) { $cat = $c; break; }
-  }
+  $cat = $catMap[$cid];
 
   list($_, $pages) = load_category_pages($cid);
-  $pages = array_reverse($pages);
 
-  foreach ($pages as $p) {
-    if (!isset($p['id'], $p['title'], $p['image'])) continue;
+  $gridItems = [];
+  for ($i = count($pages) - 1; $i >= 0; $i--) {
+    $p = $pages[$i];
     $gridItems[] = [
       'id' => $p['id'],
       'title' => $p['title'],
@@ -65,14 +35,36 @@ if (!$isCategory) {
     ];
   }
 
-  $catName = $cat['name'] ?? 'Category';
-  $catDesc = $cat['description'] ?? ($site['description'] ?? '');
-
   $count = count($gridItems);
-  $h1 = ($count > 0 ? $count . ' ' : '') . $catName;
-  $desc = $catDesc;
+  $h1 = ($count > 0 ? $count . ' ' : '') . $cat['name'];
+  $desc = $cat['description'];
 
   $title = $h1;
-  $metaDesc = $catDesc;
+  $metaDesc = $desc;
   $canonical = 'https://coloring.g55.co/?c=' . rawurlencode($cid);
+} else {
+  $totalCount = 0;
+  $gridItems = [];
+
+  foreach ($categories as $c) {
+    $catId = $c['id'];
+
+    list($_, $pages) = load_category_pages($catId);
+    $totalCount += count($pages);
+
+    $newest = newest_page($pages);
+    $gridItems[] = [
+      'id' => $newest['id'],
+      'title' => $newest['title'],
+      'image' => $newest['image'],
+      'category' => $catId
+    ];
+  }
+
+  $h1 = ($totalCount > 0 ? $totalCount . ' ' : '') . $site['h1'];
+  $desc = $site['description'];
+
+  $title = $h1;
+  $metaDesc = $desc;
+  $canonical = 'https://coloring.g55.co/';
 }
