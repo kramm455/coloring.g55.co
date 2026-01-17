@@ -7,8 +7,7 @@ $site = $index['site'];
 $categories = get_categories_sorted($index);
 
 if (!isset($_GET['id'], $_GET['c'])) {
-  http_response_code(400);
-  echo 'Missing parameters';
+  header('Location: /', true, 302);
   exit;
 }
 
@@ -16,19 +15,20 @@ $id = clean_slug($_GET['id']);
 $cid = clean_slug($_GET['c']);
 
 if ($id === '' || $cid === '') {
-  http_response_code(400);
-  echo 'Invalid parameters';
+  header('Location: /', true, 302);
   exit;
 }
 
 $cat = null;
 foreach ($categories as $c) {
-  if ($c['id'] === $cid) { $cat = $c; break; }
+  if ($c['id'] === $cid) {
+    $cat = $c;
+    break;
+  }
 }
 
 if ($cat === null) {
-  http_response_code(404);
-  echo 'Category not found';
+  header('Location: /', true, 302);
   exit;
 }
 
@@ -36,12 +36,14 @@ list($_, $pages) = load_category_pages($cid);
 
 $page = null;
 foreach ($pages as $p) {
-  if ($p['id'] === $id) { $page = $p; break; }
+  if ($p['id'] === $id) {
+    $page = $p;
+    break;
+  }
 }
 
 if ($page === null) {
-  http_response_code(404);
-  echo 'Not found';
+  header('Location: /', true, 302);
   exit;
 }
 
@@ -55,8 +57,7 @@ $imageSrc = $page['image'];
 $h1 = $pageTitle;
 $desc = $page['description'];
 
-list($_, $pagesAll) = load_category_pages($cid);
-$pagesAllRev = array_reverse($pagesAll);
+$pagesAllRev = array_reverse($pages);
 
 $similar = [];
 foreach ($pagesAllRev as $p) {
