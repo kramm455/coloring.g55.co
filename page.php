@@ -13,12 +13,12 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'page
 <link rel="stylesheet" href="/style.css">
 <script defer src="/colors.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6180203036822393" crossorigin="anonymous"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6SLYYXXV9H"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F24J0X7PDM"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-6SLYYXXV9H');
+gtag('config', 'G-F24J0X7PDM');
 </script>
 <script>
 (function() {
